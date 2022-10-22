@@ -19,7 +19,6 @@ contract("Game", async accounts => {
   var Weth            = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
   var WMatic          = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
   var uniswapV3Router = "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
-
   var deployedWorldContract
   var deployedFarmContract
   var deployedGameManager
@@ -27,16 +26,13 @@ contract("Game", async accounts => {
   var deployedEmittedResource
   var deployedUniswapV3Helper
   var deployedFarmManager
-
   var deployedAULContract
   var deployedWrappedResource
-
   var plot
 
   it('should be able to deploy farm', async () => {
     deployedGameManager = await gameManagerContract.new({from: accounts[0]})
   });
-
 
   it('should be able to deploy farm', async () => {
     deployedFarmContract = await farmContract.new({from: accounts[0]})
