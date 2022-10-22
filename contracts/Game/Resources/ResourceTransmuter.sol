@@ -5,11 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Resources/WrappedResource.sol";
 import "hardhat/console.sol";
 
-//this contract is a v simple constant product swap
-//loosely based on https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol
-
 contract ResourceTransmuter is Ownable {
-
 
     address token0;
     address token1;

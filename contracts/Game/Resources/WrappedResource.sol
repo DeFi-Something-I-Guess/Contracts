@@ -28,7 +28,6 @@ contract WrappedResource is ERC20 {
     }
 
     // Todo: Reentrancy Guard
-    // Todo: Underlying action
     function deposit(uint amount) external {
         mintInterest();
 
@@ -40,7 +39,6 @@ contract WrappedResource is ERC20 {
     }
 
     // Todo: Reentrancy Guard
-    // Todo: Underlying action
     function withdraw(uint amount) external {
         mintInterest();
 
