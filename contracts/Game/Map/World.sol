@@ -11,6 +11,7 @@ contract World is Ownable {
 
     mapping(uint => mapping(uint => address)) map;
     mapping(uint => mapping(uint => uint)) nftId;
+    mapping(address => bool) pvp;
     address farmImplementation;
     address gameManager;
     address resourceManager;
@@ -61,6 +62,12 @@ contract World is Ownable {
         uint yDistance = (_y1 * _y1) - (_y2 * _y2);
         
         d = yDistance + xDistance;
+    }
+
+    function togglePVP(uint x, uint y) external {
+        address plot = map[x][y];
+        require(Farm(plot).owner() == msg.sender, "only farm owner");
+        pvp[plot] = true;
     }
 
     receive() external payable {}

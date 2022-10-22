@@ -11,8 +11,6 @@ contract GameManager is Ownable {
     address public exchange;
     address public treasureManager;
     address public farmManager;
-    address public buildingManager;
-    address public troopManager;
     bool public pause;
 
     function setWorld(address _world) external onlyOwner {
@@ -43,16 +41,6 @@ contract GameManager is Ownable {
     function setFarmManager(address _farmManager) external onlyOwner {
         require(_farmManager != address(0), "address(0)");
         farmManager = _farmManager;
-    }
-
-    function setBuildingManager(address _buildingManager) external onlyOwner {
-        require(_buildingManager != address(0), "address(0)");
-        buildingManager = _buildingManager;
-    }
-
-    function setTroopManager(address _troopManager) external onlyOwner {
-        require(_troopManager != address(0), "address(0)");
-        troopManager = _troopManager;
     }
 
     function togglePause(bool _pause) external onlyOwner {

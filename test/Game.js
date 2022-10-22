@@ -99,4 +99,8 @@ contract("Game", async accounts => {
     await deployedFarmManager.harvestAll(plot)
   });
 
+  it('should be able to harvest all resources', async () => {
+    await deployedFarmManager.harvestAll(plot)
+  });
+
 });
