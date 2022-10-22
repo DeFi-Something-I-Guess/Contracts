@@ -3,10 +3,9 @@ pragma solidity >=0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Underlying.sol";
 
-
-  struct ReserveConfigurationMap {
+struct ReserveConfigurationMap {
     uint256 data;
-  }
+}
 
 struct ReserveData {
     ReserveConfigurationMap configuration;

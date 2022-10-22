@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Resources/ResourceManager.sol";
 import "../Resources/WrappedResource.sol";
 import "../Resources/EmittedResource.sol";
-import "../Resources/ProducedResource.sol";
 import "../Management/GameManager.sol";
 import "hardhat/console.sol";
 
@@ -63,7 +62,10 @@ contract FarmManager is Ownable {
 
             uint level = resourceLevels[farm][resource];
             
+            console.log("Balance Before: %s", IERC20(r.emittedResource).balanceOf(farm));
             EmittedResource(r.emittedResource).mint(farm, level, time);
+            console.log("Balance After: %s", IERC20(r.emittedResource).balanceOf(farm));
+            
         }
     }
 

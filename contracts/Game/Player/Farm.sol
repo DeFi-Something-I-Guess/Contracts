@@ -9,7 +9,7 @@ import "hardhat/console.sol";
 
 contract Farm {
 
-    address owner;
+    address public owner;
     address gameManager;
     bool initialised;
     uint x;

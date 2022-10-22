@@ -8,7 +8,6 @@ const emitterContract  = artifacts.require ("./EmittedResource.sol");
 const rmContract       = artifacts.require ("./ResourceManager.sol");
 const wrContract       = artifacts.require ("./WrappedResource.sol");
 const fmContract       = artifacts.require ("FarmManager.sol");
-const prContract       = artifacts.require ("ProducedResource.sol");
 const v3HelperContract = artifacts.require ("./UniswapV3Helper.sol");
 
 
@@ -40,7 +39,7 @@ contract("Game", async accounts => {
   });
 
   it('should be able to deploy resource manager', async () => {
-    deployedResourceManager = await rmContract.new( {from: accounts[0]})
+    deployedResourceManager = await rmContract.new(deployedGameManager.address, {from: accounts[0]})
     await deployedGameManager.setResourceManager(deployedResourceManager.address)
   });
 
@@ -49,21 +48,19 @@ contract("Game", async accounts => {
     await deployedGameManager.setFarmManager(deployedFarmManager.address)
   });
 
-  it('should be able to deploy an underlying resource adapter for aave', async () => {
-    deployedAULContract = await aaveULContract.new(USDC, aaveV3Pool, {from: accounts[0]})
-  });
-
-  it('should be able to deploy a wrapped resource', async () => {
-    deployedWrappedResource = await wrContract.new("DeAppleTree", "DeFi Farm: Apple Tree", deployedAULContract.address, deployedGameManager.address, {from: accounts[0]})
-  });
-
-  it('should be able to deploy an emitter resource', async () => {
-    deployedEmittedResource = await emitterContract.new("DeApple", "DeFi Farm: Apple", 0.001e5, deployedGameManager.address, {from: accounts[0]})
-  });
-
-  it('should be able to add resources to the manager', async () => {
-    var level = 10000
-    await deployedResourceManager.addResource(deployedWrappedResource.address, deployedEmittedResource.address, level)
+  it('should be able to deploy a new aave resource', async () => {
+    var aaveResouceSetup = {
+      'emissionRate' : 0.001e5,
+      'levelUp': 1000,
+      'underlying' : USDC,
+      'pool': aaveV3Pool,
+      'wrappedName': "DeFi Farm: Apple Tree",
+      'wrappedSymbol': "DeAppleTree",
+      'emittedName': "DeFi Farm: Apple",
+      'emittedSymbol': "DeApple"
+    }
+    
+    deployedEmittedResource = await deployedResourceManager.generateNewAaveResource(aaveResouceSetup)
     var res = await deployedResourceManager.getResource(0)
     console.log(res)
   });
