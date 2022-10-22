@@ -32,7 +32,8 @@ contract DeWorld is Ownable {
     *   internal function used to deploy a farm at (x,y)
     */
     function _deployFarm() internal returns (address plot){
-        plot = new DeFarm(msg.sender);
+        DeFarm newFarm = new DeFarm(msg.sender);
+        plot = address(newFarm);
         farmOwners[msg.sender] = plot;
         allFarms.push(plot);
     }
