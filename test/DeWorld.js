@@ -11,6 +11,10 @@ contract("DeWorld", async accounts => {
 
   it('should be able to create a farm', async () => {
     await deployedDeWorldContract.createPlot(0, 0);
+
+    plot = await deployedDeWorldContract.getPlot(0, 0);
+    console.log(plot)
   });
+
 
 });
