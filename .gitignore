@@ -250,3 +250,4 @@ yarn.lock
 .env.json
 .env
 .temp
+build
