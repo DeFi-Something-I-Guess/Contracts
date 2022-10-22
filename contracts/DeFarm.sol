@@ -16,6 +16,9 @@ contract DeFarm is Ownable {
     constructor(address _farmOwner) public {
         farmOwner = _farmOwner;
     }
+
     receive() external payable {}
     fallback() external payable {}
+
+    
 }
