@@ -23,7 +23,7 @@ contract DeWorld is Ownable {
     */
     function createPlot(uint x, uint y) public {
         require(x < xSize && y < ySize, "Out of Bounds");
-        require(world[x][y] != address(0), "A Farm Already Exists");
+        require(world[x][y] == address(0), "A Farm Already Exists");
         require(farmOwners[msg.sender] == address(0), "Already Own A Farm");
         address plot = _deployFarm();
     }
