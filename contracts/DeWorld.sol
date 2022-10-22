@@ -14,7 +14,13 @@ contract DeWorld is Ownable {
     fallback() external payable {}
 
     function createPlot(uint x, uint y) public {
-        require(world[x][y] == address(0), "A Farm Already Exists");
+        require(x < xSize && y < ySize, "Out of Bounds");
+        require(world[x][y] != address(0), "A Farm Already Exists");
+        _createFarm();
+    }
+
+    function _createFarm() internal {
+
     }
 
 
