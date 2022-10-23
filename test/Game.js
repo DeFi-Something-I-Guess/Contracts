@@ -7,6 +7,7 @@ const aaveULContract   = artifacts.require ("./AaveV3Underlying.sol");
 const emitterContract  = artifacts.require ("./EmittedResource.sol");
 const rmContract       = artifacts.require ("./ResourceManager.sol");
 const wrContract       = artifacts.require ("./WrappedResource.sol");
+const trContract       = artifacts.require ("./ResourceTransmuter.sol");
 const fmContract       = artifacts.require ("FarmManager.sol");
 const v3HelperContract = artifacts.require ("./UniswapV3Helper.sol");
 
@@ -23,6 +24,7 @@ contract("Game", async accounts => {
   var deployedGameManager
   var deployedResourceManager
   var deployedEmittedResource
+  var deployedTransmuter
   var deployedUniswapV3Helper
   var deployedFarmManager
   var deployedAULContract
@@ -36,6 +38,20 @@ contract("Game", async accounts => {
   it('should be able to deploy farm', async () => {
     deployedFarmContract = await farmContract.new({from: accounts[0]})
     await deployedGameManager.setFarmImplementation(deployedFarmContract.address)
+  });
+
+  it('should be able to deploy resource implementations', async () => {
+    deployedWrappedResource = await wrContract.new({from: accounts[0]})
+    await deployedGameManager.setWrappedResourceImplementation(deployedWrappedResource.address)
+
+    deployedAULContract = await aaveULContract.new({from: accounts[0]})
+    await deployedGameManager.setAaveV3Implementation(deployedAULContract.address)
+
+    deployedEmittedResource = await emitterContract.new({from: accounts[0]})
+    await deployedGameManager.setEmittedResourceImplementation(deployedEmittedResource.address)
+
+    deployedTransmuter = await  trContract.new({from: accounts[0]})
+    await deployedGameManager.setTransmuterImplementation(deployedTransmuter.address)
   });
 
   it('should be able to deploy resource manager', async () => {
@@ -60,7 +76,7 @@ contract("Game", async accounts => {
       'emittedSymbol': "DeApple"
     }
     
-    deployedEmittedResource = await deployedResourceManager.generateNewAaveResource(aaveResouceSetup)
+    await deployedResourceManager.generateNewAaveResource(aaveResouceSetup)
     var res = await deployedResourceManager.getResource(0)
     console.log(res)
   });

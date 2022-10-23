@@ -2,9 +2,12 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./WrappedResource.sol";
-import "./EmittedResource.sol";
-import "./AaveV3Underlying.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
+import "../Management/GameManager.sol";
+import "./Interfaces/IAaveV3Underlying.sol";
+import "./Interfaces/IEmittedResource.sol";
+import "./Interfaces/IResourceTransmuter.sol";
+import "./Interfaces/IWrappedResource.sol";
 import "hardhat/console.sol";
 
 struct Resource {
@@ -13,6 +16,7 @@ struct Resource {
     address depositToken;
     address resourceToken;
     address emittedResource;
+    address transmuter;
     uint levelUpValue;
 }
 
@@ -43,19 +47,21 @@ contract ResourceManager is Ownable {
         gameManager = _gameManager;
     }
 
-    function addResource(address resourceAddress, address emittedResource, address underlying, uint levelUp) public onlyOwner {
+    
+    function addResource(address resourceAddress, address emittedResource, address underlying, address transmuter, uint levelUp) public onlyOwner {
         require(_hasToken[underlying] == false, "Resource Exists");
         _hasToken[underlying] = true;
         
-        uint decimals = ITokenInfo(WrappedResource(resourceAddress).asset()).decimals();
+        uint decimals = ITokenInfo(IWrappedResource(resourceAddress).asset()).decimals();
         uint levelValue = (levelUp * 10**decimals) / scaleFactor;
 
         Resource memory r = Resource({
-            asset: WrappedResource(resourceAddress).asset(),
-            underlying: WrappedResource(resourceAddress).underlying(),
-            depositToken: WrappedResource(resourceAddress).depositToken(),
+            asset: IWrappedResource(resourceAddress).asset(),
+            underlying: underlying,
+            depositToken: IWrappedResource(resourceAddress).depositToken(),
             resourceToken: resourceAddress,
             emittedResource: emittedResource,
+            transmuter: transmuter,
             levelUpValue: levelValue
         });
         _resources[totalResources] = r;
@@ -63,13 +69,26 @@ contract ResourceManager is Ownable {
     }
 
     function generateNewAaveResource(AaveResourceSetup memory aaveResource) external onlyOwner {
-        AaveV3Underlying a = new AaveV3Underlying(aaveResource.underlying, aaveResource.pool);
-        WrappedResource w = new WrappedResource(aaveResource.wrappedName, aaveResource.wrappedSymbol, address(a), gameManager);
-        EmittedResource e = new EmittedResource(aaveResource.emittedName, aaveResource.emittedSymbol, aaveResource.emissionRate, gameManager);
-        addResource(address(w), address(e), aaveResource.underlying, aaveResource.levelUp);
-    }
 
+        address a = Clones.clone(GameManager(gameManager).aaveV3Implementation());
+        IAaveV3Underlying(a).initialiser(aaveResource.underlying, aaveResource.pool);
+
+        address w = Clones.clone(GameManager(gameManager).wrappedResourceImplementation());
+        IWrappedResource(w).initialiser(aaveResource.wrappedName, aaveResource.wrappedSymbol, address(a), gameManager);
+
+        address e = Clones.clone(GameManager(gameManager).emittedResourceImplementation());
+        IEmittedResource(e).initialiser(aaveResource.emittedName, aaveResource.emittedSymbol, aaveResource.emissionRate, gameManager);
+
+        address t = Clones.clone(GameManager(gameManager).transmuterImplementation());
+        IResourceTransmuter(t).initialiser(address(w), address(e));
+
+        IWrappedResource(w).setTransmuter(address(t));
+        addResource(address(w), address(e), aaveResource.underlying, address(t), aaveResource.levelUp);
+    }
+    
+    
     function getResource(uint r) external view returns(Resource memory) {
         return _resources[r];
     }
+    
 }

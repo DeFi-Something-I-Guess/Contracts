@@ -8,18 +8,42 @@ import "hardhat/console.sol";
 
 contract WrappedResource is ERC20 {
 
-    address public underlying;
     address public asset;
+    address public underlying;
     address public depositToken;
-    address public resourceToken;
     address public gameManager;
-    uint public totalSupplied;
+    address public transmuter;
+    uint public totalSupplied;    
+    address public owner;
+    bool initialised;
+    string _name;
+    string _symbol;
 
-    constructor(string memory _name, string memory _symbol, address _underlying, address _gameManager) ERC20(_name, _symbol) public {
+    modifier onlyOwner{
+        require(msg.sender == owner, "OnlyOwner");
+        _;
+    }
+
+    constructor() ERC20("", ""){
+        //set the implementation as initialised
+        initialised = true;
+    }
+
+     function initialiser(string memory __name, string memory __symbol, address _underlying, address _gameManager) public {
+        require(initialised == false, "intiailised");
+        initialised = true;
+        _symbol = __symbol;
+        _name = __name;
         underlying = _underlying;
         asset = Underlying(underlying).asset();
         depositToken = Underlying(underlying).depositToken();
         gameManager = _gameManager;
+        owner = msg.sender;
+    }
+    
+    function setTransmuter(address _transmuter) external {
+        require(transmuter == address(0), "Already set");
+        transmuter = _transmuter;
     }
 
     // Total Interest Gained by This Wrapper
@@ -54,7 +78,7 @@ contract WrappedResource is ERC20 {
     function mintInterest() public {
         uint interest = getInterest();
         if(interest > 0){
-            _mint(GameManager(gameManager).treasureManager(), interest);
+            _mint(transmuter, interest);
         }
     }
 }

@@ -2,21 +2,47 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Management/GameManager.sol";
 import "hardhat/console.sol";
 
-contract EmittedResource is ERC20, Ownable {
+contract EmittedResource is ERC20 {
 
     address gameManager;
     uint emissionRate;
     uint minute = 60;
     mapping(address => bool) minters;
+    address public owner;
+    bool initialised;
+    string _name;
+    string _symbol;
 
-    constructor(string memory _name, string memory _symbol, uint _emissionRate, address _gameManager) ERC20(_name, _symbol) public {
+    modifier onlyOwner{
+        require(msg.sender == owner, "OnlyOwner");
+        _;
+    }
+
+    constructor() ERC20("", ""){
+        //set the implementation as initialised
+        initialised = true;
+    }
+
+    function initialiser(string memory __name, string memory __symbol, uint _emissionRate, address _gameManager) public {
+        require(initialised == false, "intiailised");
+        initialised = true;
+        _symbol = __symbol;
+        _name = __name;
         emissionRate = _emissionRate;
         gameManager = _gameManager;
         minters[GameManager(gameManager).farmManager()] = true;
+        owner = msg.sender;
+    }
+
+    function name() public override view returns(string memory){
+        return _name;
+    }
+    
+    function symbol() public override view returns(string memory){
+        return _symbol;
     }
 
     function changeMinter(address _minter, bool state) external onlyOwner {

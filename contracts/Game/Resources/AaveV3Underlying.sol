@@ -36,8 +36,16 @@ interface IAave {
 contract AaveV3Underlying is Underlying{
     
     address lendingPool;
+    bool initialised;
 
-    constructor(address _a, address _lp) {
+    constructor(){
+        //set the implementation as initialised
+        initialised = true;
+    }
+
+    function initialiser(address _a, address _lp) public {
+        require(initialised == false, "intiailised");
+        initialised = true;
         asset = _a;
         lendingPool = _lp;
         ReserveData memory reserve = IAave(lendingPool).getReserveData(asset);

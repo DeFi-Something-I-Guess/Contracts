@@ -9,8 +9,11 @@ contract GameManager is Ownable {
     address public resourceManager;
     address public farmImplementation;
     address public exchange;
-    address public treasureManager;
     address public farmManager;
+    address public aaveV3Implementation;
+    address public emittedResourceImplementation;
+    address public wrappedResourceImplementation;
+    address public transmuterImplementation;
     bool public pause;
 
     function setWorld(address _world) external onlyOwner {
@@ -33,17 +36,33 @@ contract GameManager is Ownable {
         exchange = _exchange;
     }
 
-    function setTreasureManager(address _treasureManager) external onlyOwner {
-        require(_treasureManager != address(0), "address(0)");
-        treasureManager = _treasureManager;
-    }
-
     function setFarmManager(address _farmManager) external onlyOwner {
         require(_farmManager != address(0), "address(0)");
         farmManager = _farmManager;
     }
 
+    function setAaveV3Implementation(address _aaveV3Implementation) external onlyOwner {
+        require(_aaveV3Implementation != address(0), "address(0)");
+        aaveV3Implementation = _aaveV3Implementation;
+    }
+
+    function setEmittedResourceImplementation(address _emittedResourceImplementation) external onlyOwner {
+        require(_emittedResourceImplementation != address(0), "address(0)");
+        emittedResourceImplementation = _emittedResourceImplementation;
+    }
+
+    function setWrappedResourceImplementation(address _wrappedResourceImplementation) external onlyOwner {
+        require(_wrappedResourceImplementation != address(0), "address(0)");
+        wrappedResourceImplementation = _wrappedResourceImplementation;
+    }
+
+    function setTransmuterImplementation(address _transmuterImplementation) external onlyOwner {
+        require(_transmuterImplementation != address(0), "address(0)");
+        transmuterImplementation = _transmuterImplementation;
+    }
+
     function togglePause(bool _pause) external onlyOwner {
         pause = _pause;
     }
+
 }
