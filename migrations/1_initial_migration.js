@@ -118,4 +118,16 @@ module.exports = async (deployer) => {
   }
   await deployedResourceManager.generateNewAaveResource(aaveResouceSetup)
 
+  var aaveResouceSetup = {
+    'emissionRate': 1,
+    'levelUp': 1,
+    'underlying': WMatic,
+    'pool': aaveV3Pool,
+    'wrappedName': "DeFi Farm: Orange Tree",
+    'wrappedSymbol': "DeOrangeTree",
+    'emittedName': "DeFi Farm: Orange",
+    'emittedSymbol': "DeOrange"
+  }
+  await deployedResourceManager.generateNewAaveResource(aaveResouceSetup)
+
 };
