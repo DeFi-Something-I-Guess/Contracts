@@ -46,7 +46,6 @@ contract ResourceTransmuter {
         uint startBalance = IERC20(asset).balanceOf(address(this));
         IWrappedResource(wrappedToken).withdraw(amount);
         uint changeBalance = IERC20(asset).balanceOf(address(this)) - startBalance;
-
         IERC20(asset).transfer(msg.sender, changeBalance);
     }
 }
